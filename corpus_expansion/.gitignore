@@ -1,0 +1,7 @@
+# Reproducible upstream downloads; retained locally, not redistributed.
+/archives/
+/snapshots/
+/evidence/*.pdf
+/evidence/*.txt
+__pycache__/
+*.py[cod]

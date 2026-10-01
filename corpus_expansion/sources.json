@@ -1,0 +1,58 @@
+[
+  {
+    "id": "balancer-v3-2024",
+    "repo": "balancer/balancer-v3-monorepo",
+    "commit": "e4455afa4a8b229197e8bd9f1277b7cef2760454",
+    "pin_evidence": "PDF page 4: audit spans 8df7df50b9841bc5559f6cbfef9fbbc98bf1afb7 to e4455afa4a8b229197e8bd9f1277b7cef2760454; selected final endpoint, not a claim that every repository file was audited.",
+    "report_url": "https://www.certora.com/reports/balancer-v3",
+    "report_pdf": "https://certora.cdn.prismic.io/certora/Z0dwEZbqstJ971v2_CertoraReportBalancer.pdf"
+  },
+  {
+    "id": "safe-v1.5-2025",
+    "repo": "safe-global/safe-smart-account",
+    "commit": "1c8b24a0a438e8c2cd089a9d830d1688a47a28d5",
+    "pin_evidence": "PDF page 4 Audited Commits: initial 834e798aa51291cccaf0594921194928716e9892; latest including fixes 1c8b24a0a438e8c2cd089a9d830d1688a47a28d5. Full SHAs extracted from PDF link annotations.",
+    "report_url": "https://www.certora.com/reports/safe-v1.5.0",
+    "report_pdf": "https://certora.cdn.prismic.io/certora/aFA51bNJEFaPX_11_Safe-Certora-Safev1.5-Finalreport-January2025.pdf"
+  },
+  {
+    "id": "aave-v4-hub-2026",
+    "repo": "aave/aave-v4",
+    "commit": "457657bb8198523117845de8a099d0a0353dce78",
+    "pin_evidence": "PDF pages 10 and 13 explicitly cite this early version of LiquidityHub.sol in findings. Page 3 has no final audited commit. This snapshot is report-cited historical context, NOT the final March 2026 verified Hub revision.",
+    "report_url": "https://www.certora.com/reports/aave-v4-fv-hub",
+    "report_pdf": "https://certora.cdn.prismic.io/certora/nhxYyhMmTmV0lOoo_Certora-AaveV4-FV-Hub-1-.pdf"
+  },
+  {
+    "id": "aave-v3-core-public-2026-10-01",
+    "repo": "aave/aave-v3-core",
+    "commit": "782f51917056a53a2c228701058a6c3fb233684a",
+    "pin_evidence": "GitHub public commits/HEAD API consulted 2026-10-01; commit dated 2024-09-03. Supplemental public repository snapshot; no report-to-commit audit claim.",
+    "provenance_url": "https://api.github.com/repos/aave/aave-v3-core/commits/782f51917056a53a2c228701058a6c3fb233684a",
+    "audit_scope": "supplemental public repository snapshot; audit linkage not established"
+  },
+  {
+    "id": "compound-comet-public-2026-10-01",
+    "repo": "compound-finance/comet",
+    "commit": "f766f51583c23acc33b2a7824654ef2029a96804",
+    "pin_evidence": "GitHub public commits/HEAD API consulted 2026-10-01; commit dated 2026-06-23. Supplemental public repository snapshot; no report-to-commit audit claim.",
+    "provenance_url": "https://api.github.com/repos/compound-finance/comet/commits/f766f51583c23acc33b2a7824654ef2029a96804",
+    "audit_scope": "supplemental public repository snapshot; audit linkage not established"
+  },
+  {
+    "id": "aave-v4-public-2026-10-01",
+    "repo": "aave/aave-v4",
+    "commit": "40232a0a91150d8ee5cab42bd3ddd0baf4ffff9f",
+    "pin_evidence": "git ls-remote https://github.com/aave/aave-v4.git HEAD returned this full SHA on 2026-10-01. Supplemental public repository snapshot; NOT identified as the final audited revision in the Hub report.",
+    "provenance_url": "https://github.com/aave/aave-v4/commit/40232a0a91150d8ee5cab42bd3ddd0baf4ffff9f",
+    "audit_scope": "supplemental public repository snapshot; audit linkage not established"
+  },
+  {
+    "id": "euler-vault-kit-public-2026-10-01",
+    "repo": "euler-xyz/euler-vault-kit",
+    "commit": "e88274cc624b9867d3c0197614dc5fe5201377c3",
+    "pin_evidence": "git ls-remote https://github.com/euler-xyz/euler-vault-kit.git HEAD returned this full SHA on 2026-10-01. Supplemental public repository snapshot; no report-to-commit audit claim.",
+    "provenance_url": "https://github.com/euler-xyz/euler-vault-kit/commit/e88274cc624b9867d3c0197614dc5fe5201377c3",
+    "audit_scope": "supplemental public repository snapshot; audit linkage not established"
+  }
+]

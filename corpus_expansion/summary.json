@@ -1,0 +1,364 @@
+{
+  "baseline_commit": "24a80982a6d3d69ad70a114490847d4cccc0609e",
+  "baseline_manifest_sha256": "7774dae74f6a4456106cf890d455b55a607f6d91d4a04ebb782c400863ff5a47",
+  "baseline_files": 2615,
+  "baseline_unique_contents": 2575,
+  "baseline_extensions": {
+    "": 16,
+    ".md": 35,
+    ".csv": 9,
+    ".xlsx": 14,
+    ".sol": 1527,
+    ".spec": 575,
+    ".pdf": 22,
+    ".docx": 1,
+    ".patch": 1,
+    ".sh": 107,
+    ".cairo": 19,
+    ".json": 150,
+    ".spclnk": 5,
+    ".cvl": 13,
+    ".scen": 30,
+    ".old": 8,
+    ".py": 6,
+    ".conf": 3,
+    ".easy": 1,
+    ".adoc": 14,
+    ".js": 54,
+    ".yaml": 1,
+    ".lock": 1,
+    ".png": 2,
+    ".pkl": 1
+  },
+  "counts": {
+    "materialized_files": 1524,
+    "unique_new_contents": 1380,
+    "duplicate_contents": 144,
+    "extensions": {
+      "": 7,
+      ".sol": 1433,
+      ".conf": 47,
+      ".spec": 32,
+      ".md": 5
+    },
+    "failures": 0
+  },
+  "sources": [
+    {
+      "id": "balancer-v3-2024",
+      "repo": "balancer/balancer-v3-monorepo",
+      "commit": "e4455afa4a8b229197e8bd9f1277b7cef2760454",
+      "files": 277,
+      "bytes": 2379427,
+      "extensions": {
+        "": 2,
+        ".sol": 275
+      },
+      "unique_contents_within_snapshot": 277,
+      "incremental_new_contents": 277,
+      "duplicates_against_baseline": 0,
+      "duplicates_against_expansion_only": 0,
+      "spec_files": 0,
+      "spec_files_with_cvl_declaration_tokens": 0,
+      "cvl_examples": [],
+      "license_files": [
+        "LICENSE",
+        "pkg/solidity-utils/contracts/openzeppelin/LICENSE"
+      ],
+      "license_labels": {
+        "unspecified; consult snapshot license files": 2,
+        "GPL-3.0-or-later": 254,
+        "MIT": 12,
+        "AGPL-3.0-only": 2,
+        "GPL-2.0-or-later": 7
+      },
+      "archive_sha256": "9472d10115885836e1d25b773a89083528af8b3437be087246415c3d0685654f"
+    },
+    {
+      "id": "safe-v1.5-2025",
+      "repo": "safe-global/safe-smart-account",
+      "commit": "1c8b24a0a438e8c2cd089a9d830d1688a47a28d5",
+      "files": 104,
+      "bytes": 300080,
+      "extensions": {
+        "": 1,
+        ".conf": 16,
+        ".sol": 73,
+        ".spec": 14
+      },
+      "unique_contents_within_snapshot": 104,
+      "incremental_new_contents": 104,
+      "duplicates_against_baseline": 0,
+      "duplicates_against_expansion_only": 0,
+      "spec_files": 14,
+      "spec_files_with_cvl_declaration_tokens": 14,
+      "cvl_examples": [
+        "certora/specs/Execute.spec",
+        "certora/specs/Extensible.spec",
+        "certora/specs/Fallback.spec"
+      ],
+      "license_files": [
+        "LICENSE"
+      ],
+      "license_labels": {
+        "unspecified; consult snapshot license files": 32,
+        "LGPL-3.0-only": 72
+      },
+      "archive_sha256": "fbf192c6a74a72b38008b1dee0719e0e17ba4c11abfed131dfb5ce04d7133269"
+    },
+    {
+      "id": "aave-v4-hub-2026",
+      "repo": "aave/aave-v4",
+      "commit": "457657bb8198523117845de8a099d0a0353dce78",
+      "files": 126,
+      "bytes": 1506724,
+      "extensions": {
+        "": 1,
+        ".sol": 125
+      },
+      "unique_contents_within_snapshot": 126,
+      "incremental_new_contents": 125,
+      "duplicates_against_baseline": 1,
+      "duplicates_against_expansion_only": 0,
+      "spec_files": 0,
+      "spec_files_with_cvl_declaration_tokens": 0,
+      "cvl_examples": [],
+      "license_files": [
+        "LICENSE"
+      ],
+      "license_labels": {
+        "unspecified; consult snapshot license files": 4,
+        "MIT": 110,
+        "BUSL-1.1": 11,
+        "AGPL-3.0": 1
+      },
+      "archive_sha256": "afeeb08deb2b8cbd941de75a9578ff37bf6e423153fc3ba24bf3793c664f688a"
+    },
+    {
+      "id": "aave-v3-core-public-2026-10-01",
+      "repo": "aave/aave-v3-core",
+      "commit": "782f51917056a53a2c228701058a6c3fb233684a",
+      "files": 143,
+      "bytes": 724698,
+      "extensions": {
+        ".md": 5,
+        ".sol": 132,
+        ".spec": 6
+      },
+      "unique_contents_within_snapshot": 140,
+      "incremental_new_contents": 12,
+      "duplicates_against_baseline": 131,
+      "duplicates_against_expansion_only": 0,
+      "spec_files": 6,
+      "spec_files_with_cvl_declaration_tokens": 6,
+      "cvl_examples": [
+        "certora/specs/AToken.spec",
+        "certora/specs/ReserveConfiguration.spec",
+        "certora/specs/StableDebtToken.spec"
+      ],
+      "license_files": [
+        "LICENSE.md",
+        "contracts/flashloan/base/LICENSE.md",
+        "contracts/flashloan/interfaces/LICENSE.md",
+        "contracts/interfaces/LICENSE.md",
+        "contracts/misc/interfaces/LICENSE.md"
+      ],
+      "license_labels": {
+        "unspecified; consult snapshot license files": 16,
+        "agpl-3.0": 2,
+        "BUSL-1.1": 69,
+        "MIT": 12,
+        "LGPL-3.0-or-later": 1,
+        "AGPL-3.0": 43
+      },
+      "archive_sha256": "6d94a07aef99b5b02bb531a1e239e353fa27bcb1b08fa3b51347285e9dc5466a"
+    },
+    {
+      "id": "compound-comet-public-2026-10-01",
+      "repo": "compound-finance/comet",
+      "commit": "f766f51583c23acc33b2a7824654ef2029a96804",
+      "files": 150,
+      "bytes": 598665,
+      "extensions": {
+        "": 1,
+        ".sol": 149
+      },
+      "unique_contents_within_snapshot": 150,
+      "incremental_new_contents": 145,
+      "duplicates_against_baseline": 5,
+      "duplicates_against_expansion_only": 0,
+      "spec_files": 0,
+      "spec_files_with_cvl_declaration_tokens": 0,
+      "cvl_examples": [],
+      "license_files": [
+        "LICENSE"
+      ],
+      "license_labels": {
+        "unspecified; consult snapshot license files": 12,
+        "BUSL-1.1": 82,
+        "Apache-2.0": 1,
+        "MIT": 33,
+        "GPL-2.0-or-later": 18,
+        "BSD-3-Clause": 1,
+        "UNLICENSED": 3
+      },
+      "archive_sha256": "b9774e1c6d49a284d8f640b1adfa325f4d31e4d266ea08ab5bdad9090a2f9d9c"
+    },
+    {
+      "id": "aave-v4-public-2026-10-01",
+      "repo": "aave/aave-v4",
+      "commit": "40232a0a91150d8ee5cab42bd3ddd0baf4ffff9f",
+      "files": 464,
+      "bytes": 3684239,
+      "extensions": {
+        "": 1,
+        ".sol": 463
+      },
+      "unique_contents_within_snapshot": 464,
+      "incremental_new_contents": 457,
+      "duplicates_against_baseline": 0,
+      "duplicates_against_expansion_only": 7,
+      "spec_files": 0,
+      "spec_files_with_cvl_declaration_tokens": 0,
+      "cvl_examples": [],
+      "license_files": [
+        "LICENSE"
+      ],
+      "license_labels": {
+        "unspecified; consult snapshot license files": 2,
+        "LicenseRef-BUSL": 124,
+        "MIT": 338
+      },
+      "archive_sha256": "2d9b44258c4d7abe2fcdb970453c0b63929f92c9be903f5b40f242f2c5edc4bf"
+    },
+    {
+      "id": "euler-vault-kit-public-2026-10-01",
+      "repo": "euler-xyz/euler-vault-kit",
+      "commit": "e88274cc624b9867d3c0197614dc5fe5201377c3",
+      "files": 260,
+      "bytes": 1230814,
+      "extensions": {
+        "": 1,
+        ".conf": 31,
+        ".sol": 216,
+        ".spec": 12
+      },
+      "unique_contents_within_snapshot": 260,
+      "incremental_new_contents": 260,
+      "duplicates_against_baseline": 0,
+      "duplicates_against_expansion_only": 0,
+      "spec_files": 12,
+      "spec_files_with_cvl_declaration_tokens": 12,
+      "cvl_examples": [
+        "certora/specs/BalanceForwarder.spec",
+        "certora/specs/Base.spec",
+        "certora/specs/Cache.spec"
+      ],
+      "license_files": [
+        "LICENSE"
+      ],
+      "license_labels": {
+        "unspecified; consult snapshot license files": 44,
+        "GPL-2.0-or-later": 162,
+        "agpl-3.0": 5,
+        "BUSL-1.1": 8,
+        "AGPL-3.0-or-later": 1,
+        "MIT": 39,
+        "UNLICENSED": 1
+      },
+      "archive_sha256": "a579db35c7415c5c74079f007db0f72977949a2924b781ce19a678638ddee28a"
+    }
+  ],
+  "evidence": [
+    {
+      "path": "evidence/aave-v3-core-public-2026-10-01.commit.json",
+      "bytes": 1145,
+      "sha256": "2704bc68b67ef4ef97621e90349ea013e979a34fdadb7395e44c2c39396aa75a"
+    },
+    {
+      "path": "evidence/aave-v4-hub-2026.commit.json",
+      "bytes": 4095,
+      "sha256": "0100886b8ae8aca22411501aef501d320e4b7a95d9bd3f1f7fc2616eea8d8493"
+    },
+    {
+      "path": "evidence/aave-v4-hub-2026.links.json",
+      "bytes": 8330,
+      "sha256": "8cdcd8dcb79873eccffd42043f099d5c313264b913f9b72e72e94697acee47e3"
+    },
+    {
+      "path": "evidence/aave-v4-hub-2026.pdf",
+      "bytes": 631560,
+      "sha256": "a3b37b0984be41381738517d65a22ac3e2ce6107a75f17bc2d55f2df856228b6"
+    },
+    {
+      "path": "evidence/aave-v4-hub-2026.txt",
+      "bytes": 37140,
+      "sha256": "79644ed5c8025ea8aa479fcacb31f15a6fd5c8138ad67ef41a0fd114b8ee8560"
+    },
+    {
+      "path": "evidence/aave-v4-public-2026-10-01.commit.json",
+      "bytes": 2307,
+      "sha256": "66dac86a5759a59ae7b60a341e25aae5c0a1bb6d42865137bf8a792fc7e18e83"
+    },
+    {
+      "path": "evidence/acquisition.json",
+      "bytes": 3130,
+      "sha256": "50057ab2e4100ece1b1aa176ed6ecac1daa60ef8240572594d4ea28787d21f77"
+    },
+    {
+      "path": "evidence/balancer-v3-2024.commit.json",
+      "bytes": 2294,
+      "sha256": "19d31ee820b4a23dd9a7b5e9887ce578bfa25401b3851386f4c79d24b4d2c253"
+    },
+    {
+      "path": "evidence/balancer-v3-2024.links.json",
+      "bytes": 3844,
+      "sha256": "6363c8f0b1e3765502f8ab0a7566a5efc88ecc4e8fa8643d192dc2d119c61cdd"
+    },
+    {
+      "path": "evidence/balancer-v3-2024.pdf",
+      "bytes": 549149,
+      "sha256": "8de601fbd219db7785b0f47bdc56c1689a915a0803eb24f65ff50db020a5ab4a"
+    },
+    {
+      "path": "evidence/balancer-v3-2024.txt",
+      "bytes": 46354,
+      "sha256": "74b18ad336132e5960abab9ae429f20160e752c1129d8968100685bf8884b779"
+    },
+    {
+      "path": "evidence/compound-comet-public-2026-10-01.commit.json",
+      "bytes": 3915,
+      "sha256": "f163a4e5d07036c3ac74591992b4a2a4a5fb9fe43ad8ac6ddd00806f7e1181f7"
+    },
+    {
+      "path": "evidence/euler-vault-kit-public-2026-10-01.commit.json",
+      "bytes": 2842,
+      "sha256": "9a94aa38eb38843a1a3d5f08929bb4cc9763bd73d5da902bf27e444707041321"
+    },
+    {
+      "path": "evidence/safe-v1.5-2025.commit.json",
+      "bytes": 2527,
+      "sha256": "424565d83b91058169110e0aacb43cfa84ce132606441452574b70d7136cce9e"
+    },
+    {
+      "path": "evidence/safe-v1.5-2025.links.json",
+      "bytes": 10557,
+      "sha256": "4b3f5db20dfe9310fda5c193b9b658da9db86f603df119fe21b57a0492e364a0"
+    },
+    {
+      "path": "evidence/safe-v1.5-2025.pdf",
+      "bytes": 1171782,
+      "sha256": "2be53d7889480cfd8dc9a7993a94ebd51a17ba2b0a9239b3307c666e84cf58c2"
+    },
+    {
+      "path": "evidence/safe-v1.5-2025.txt",
+      "bytes": 45802,
+      "sha256": "82812d48d6b06c68fcba9fcc6b80ffc020c218a2ed8cd766d7281ed8eb0708c9"
+    }
+  ],
+  "snapshots_with_cvl": 3,
+  "new_unique_cvl_contents": 26,
+  "combined_files": 4139,
+  "combined_unique_contents": 3955,
+  "verification": "baseline, snapshots and archive SHA-256 passed; all manifest snapshot bytes match archive members"
+}

@@ -1,0 +1,290 @@
+[
+  {
+    "page": 4,
+    "url": "https://github.com/safe-global/safe-smart-account"
+  },
+  {
+    "page": 4,
+    "url": "https://github.com/safe-global/safe-smart-account"
+  },
+  {
+    "page": 4,
+    "url": "https://github.com/safe-global/safe-smart-account/tree/834e798aa51291cccaf0594921194928716e9892"
+  },
+  {
+    "page": 4,
+    "url": "https://github.com/safe-global/safe-smart-account/tree/1c8b24a0a438e8c2cd089a9d830d1688a47a28d5"
+  },
+  {
+    "page": 9,
+    "url": "https://github.com/safe-global/safe-smart-account/blob/7f79aaf05c33df71d9cb687f0bc8a73fa39d25d5/contracts/handler/CompatibilityFallbackHandler.sol"
+  },
+  {
+    "page": 9,
+    "url": "https://github.com/safe-global/safe-smart-account/blob/7f79aaf05c33df71d9cb687f0bc8a73fa39d25d5/contracts/handler/TokenCallbackHandler.sol"
+  },
+  {
+    "page": 10,
+    "url": "https://github.com/safe-global/safe-smart-account/pull/885"
+  },
+  {
+    "page": 11,
+    "url": "https://github.com/safe-global/safe-smart-account/blob/7f79aaf05c33df71d9cb687f0bc8a73fa39d25d5/contracts/proxies/SafeProxy.sol#L43"
+  },
+  {
+    "page": 11,
+    "url": "https://github.com/safe-global/safe-smart-account/blob/7f79aaf05c33df71d9cb687f0bc8a73fa39d25d5/contracts/proxies/SafeProxy.sol#L43"
+  },
+  {
+    "page": 11,
+    "url": "https://github.com/safe-global/safe-smart-account/pull/868"
+  },
+  {
+    "page": 12,
+    "url": "https://github.com/safe-global/safe-smart-account/blob/7f79aaf05c33df71d9cb687f0bc8a73fa39d25d5/contracts/handler/extensible/SignatureVerifierMuxer.sol#L124"
+  },
+  {
+    "page": 12,
+    "url": "https://github.com/safe-global/safe-smart-account/blob/7f79aaf05c33df71d9cb687f0bc8a73fa39d25d5/contracts/handler/extensible/SignatureVerifierMuxer.sol#L124"
+  },
+  {
+    "page": 12,
+    "url": "https://github.com/safe-global/safe-smart-account/blob/7f79aaf05c33df71d9cb687f0bc8a73fa39d25d5/contracts/handler/extensible/SignatureVerifierMuxer.sol#L124"
+  },
+  {
+    "page": 12,
+    "url": "https://github.com/safe-global/safe-smart-account/pull/873"
+  },
+  {
+    "page": 13,
+    "url": "https://github.com/safe-global/safe-smart-account/blob/43097762c2833aabc7c881c069b7cf92d08af7a0/contracts/handler/extensible/ERC165Handler.sol#L53-L68"
+  },
+  {
+    "page": 13,
+    "url": "https://github.com/safe-global/safe-smart-account/blob/43097762c2833aabc7c881c069b7cf92d08af7a0/contracts/handler/extensible/ERC165Handler.sol#L53-L68"
+  },
+  {
+    "page": 14,
+    "url": "https://github.com/safe-global/safe-smart-account/blob/7f79aaf05c33df71d9cb687f0bc8a73fa39d25d5/contracts/Safe.sol#L419-L442"
+  },
+  {
+    "page": 14,
+    "url": "https://docs.soliditylang.org/en/latest/assembly.html#access-to-external-variables-functions-and-libraries"
+  },
+  {
+    "page": 14,
+    "url": "https://github.com/safe-global/safe-smart-account/pull/872"
+  },
+  {
+    "page": 15,
+    "url": "https://github.com/safe-global/safe-smart-account/blob/7f79aaf05c33df71d9cb687f0bc8a73fa39d25d5/contracts/Safe.sol#L31"
+  },
+  {
+    "page": 15,
+    "url": "https://github.com/safe-global/safe-smart-account/blob/43097762c2833aabc7c881c069b7cf92d08af7a0/contracts/base/FallbackManager.sol#L80"
+  },
+  {
+    "page": 15,
+    "url": "https://github.com/safe-global/safe-smart-account/pull/879"
+  },
+  {
+    "page": 16,
+    "url": "https://github.com/safe-global/safe-smart-account/blob/7f79aaf05c33df71d9cb687f0bc8a73fa39d25d5/contracts/SafeL2.sol#L16-L32"
+  },
+  {
+    "page": 17,
+    "url": "https://github.com/safe-global/safe-smart-account/pull/886"
+  },
+  {
+    "page": 18,
+    "url": "https://github.com/safe-global/safe-smart-account/pull/887"
+  },
+  {
+    "page": 20,
+    "url": "https://github.com/safe-global/safe-smart-account/pull/888"
+  },
+  {
+    "page": 20,
+    "url": "https://github.com/safe-global/safe-smart-account/pull/889"
+  },
+  {
+    "page": 21,
+    "url": "https://github.com/safe-global/safe-smart-account/pull/890"
+  },
+  {
+    "page": 22,
+    "url": "https://github.com/safe-global/safe-smart-account/pull/891"
+  },
+  {
+    "page": 23,
+    "url": "https://github.com/safe-global/safe-smart-account/commit/7f79aaf05c33df71d9cb687f0bc8a73fa39d25d5"
+  },
+  {
+    "page": 23,
+    "url": "https://github.com/safe-global/safe-smart-account/commit/7f79aaf05c33df71d9cb687f0bc8a73fa39d25d5"
+  },
+  {
+    "page": 23,
+    "url": "https://github.com/safe-global/safe-smart-account/pull/892"
+  },
+  {
+    "page": 24,
+    "url": "https://github.com/safe-global/safe-smart-account/pull/893"
+  },
+  {
+    "page": 26,
+    "url": "https://github.com/safe-global/safe-smart-account/pull/894"
+  },
+  {
+    "page": 26,
+    "url": "https://github.com/safe-global/safe-smart-account/tree/43097762c2833aabc7c881c069b7cf92d08af7a0/contracts/Safe.sol"
+  },
+  {
+    "page": 27,
+    "url": "https://github.com/safe-global/safe-smart-account/tree/43097762c2833aabc7c881c069b7cf92d08af7a0/contracts/common/StorageAccessible.sol"
+  },
+  {
+    "page": 27,
+    "url": "https://github.com/safe-global/safe-smart-account/pull/895"
+  },
+  {
+    "page": 28,
+    "url": "https://github.com/safe-global/safe-smart-account/tree/43097762c2833aabc7c881c069b7cf92d08af7a0/contracts/base/OwnerManager.sol"
+  },
+  {
+    "page": 28,
+    "url": "https://github.com/safe-global/safe-smart-account/tree/43097762c2833aabc7c881c069b7cf92d08af7a0/contracts/handler/extensible/ERC165Handler.sol"
+  },
+  {
+    "page": 28,
+    "url": "https://github.com/safe-global/safe-smart-account/pull/896"
+  },
+  {
+    "page": 30,
+    "url": "https://github.com/safe-global/safe-smart-account/tree/43097762c2833aabc7c881c069b7cf92d08af7a0/contracts/Safe.sol"
+  },
+  {
+    "page": 30,
+    "url": "https://github.com/safe-global/safe-smart-account/tree/43097762c2833aabc7c881c069b7cf92d08af7a0/contracts/base/ModuleManager.sol"
+  },
+  {
+    "page": 30,
+    "url": "https://github.com/safe-global/safe-smart-account/tree/43097762c2833aabc7c881c069b7cf92d08af7a0/contracts/base/OwnerManager.sol"
+  },
+  {
+    "page": 30,
+    "url": "https://github.com/safe-global/safe-smart-account/tree/43097762c2833aabc7c881c069b7cf92d08af7a0/contracts/common/StorageAccessible.sol"
+  },
+  {
+    "page": 31,
+    "url": "https://github.com/safe-global/safe-smart-account/tree/43097762c2833aabc7c881c069b7cf92d08af7a0/contracts/handler/extensible/ERC165Handler.sol"
+  },
+  {
+    "page": 31,
+    "url": "https://github.com/safe-global/safe-smart-account/tree/43097762c2833aabc7c881c069b7cf92d08af7a0/contracts/libraries/SafeToL2Migration.sol"
+  },
+  {
+    "page": 31,
+    "url": "https://github.com/safe-global/safe-smart-account/pull/897"
+  },
+  {
+    "page": 33,
+    "url": "https://prover.certora.com/output/39601/cf9c0bafb4a742e6b8dab73ddb709e47?anonymousKey=273f436c6f7529b3678b3615b34d99c83e636fff"
+  },
+  {
+    "page": 33,
+    "url": "https://prover.certora.com/output/39601/5e35072a6ce149ce8374698f9d24cf68?anonymousKey=bcce6dcb98da37922c853f492452da6cbc0253d1"
+  },
+  {
+    "page": 33,
+    "url": "https://prover.certora.com/output/39601/be8f3a2419c549aaaf704ee3eb5bcd72?anonymousKey=d46dfe642afa7eff4d0cbb72074d6111df012074"
+  },
+  {
+    "page": 33,
+    "url": "https://prover.certora.com/output/39601/a9a8eaeba7994e10bf29dbe8813798b9?anonymousKey=fbddda2f78b44a7df3dff4707715b90b2d08ab63"
+  },
+  {
+    "page": 34,
+    "url": "https://prover.certora.com/output/39601/e935d11bc7684d7eba966e7972d03175?anonymousKey=050ec802a24d492f84f361b630075dc2ea27e57c"
+  },
+  {
+    "page": 34,
+    "url": "https://prover.certora.com/output/39601/61b504ff0f544907a9b6705fbccde2e8?anonymousKey=9845e55bbd23322cb344427eb26c450e6a302a74"
+  },
+  {
+    "page": 34,
+    "url": "https://prover.certora.com/output/39601/8147e74eda404e61bcb6fc8e8849c5f3?anonymousKey=5c1e77468b6f5bff22c376894dca846f5ea83aab"
+  },
+  {
+    "page": 34,
+    "url": "https://prover.certora.com/output/39601/7591e8c61e6d407b847e38bbe8238e13?anonymousKey=5d99429f5046e77825a4ed015af0a6a0d088538d"
+  },
+  {
+    "page": 34,
+    "url": "https://prover.certora.com/output/39601/2de5a471d628464e8aaf4b9022e515de?anonymousKey=c4997fd77ba3808cf9bdc6a432f9b20eea551c95"
+  },
+  {
+    "page": 35,
+    "url": "https://prover.certora.com/output/39601/dcc09acbeead4df9868519a4ac0e3ee5?anonymousKey=327efa3ac9dde7907db389b3a2688ce42094ef41"
+  },
+  {
+    "page": 35,
+    "url": "http://exectxnmodulereturndatapermissions"
+  },
+  {
+    "page": 35,
+    "url": "https://prover.certora.com/output/39601/9b60b63b5aa84428b9fca530f870c4b6?anonymousKey=4b731a650337bea416faf81e806d96a7b040f8e8"
+  },
+  {
+    "page": 35,
+    "url": "https://prover.certora.com/output/39601/9f364fac5e8c43e0acc2d93cea3f5560?anonymousKey=d37fb383bff8fa2fe0dacf60b61130e1aadf2ad4"
+  },
+  {
+    "page": 36,
+    "url": "https://prover.certora.com/output/39601/5f0f9128bc6b48198910430198a512dd?anonymousKey=bf7e0e14eb39ea891521b6fcd0e048c7759eda1a"
+  },
+  {
+    "page": 36,
+    "url": "https://prover.certora.com/output/39601/5c2d9df8cf874c2c9653fc1814f87e09?anonymousKey=79e74a676efa255550e902ad6519bfe11aba4f2e"
+  },
+  {
+    "page": 36,
+    "url": "https://prover.certora.com/output/39601/c63d4b37c7374cad81daf623737a2ef9?anonymousKey=24c75ae3e39b39935b0658e40deb1ddb9f5be041"
+  },
+  {
+    "page": 37,
+    "url": "https://prover.certora.com/output/39601/7849e9a464e042ea89bfe68fc226edbc?anonymousKey=5c1387afecb8bc86f23df3be5eb886a5cd82787f"
+  },
+  {
+    "page": 38,
+    "url": "https://prover.certora.com/output/39601/ab995049df0b454b888f3cd6a27331d5?anonymousKey=1a710fa917c8c60a9a420e026d6570d91e1e923b"
+  },
+  {
+    "page": 38,
+    "url": "https://prover.certora.com/output/39601/edb75f86f23445cdbc7cd7b5c4c420b6?anonymousKey=62191f4f70404bcbce784f5172e3ed7ab323d416"
+  },
+  {
+    "page": 38,
+    "url": "https://prover.certora.com/output/39601/38653935d0db460994d1a8c5bfdf57bb?anonymousKey=988218ca4f784fd27ea96fd2f14644719e2e9468"
+  },
+  {
+    "page": 38,
+    "url": "https://prover.certora.com/output/39601/bab9860cdfc44a83bed82e79d8c06218?anonymousKey=b4c5dbef050bb201ad78b3dd5af5cdca8ffa9f92"
+  },
+  {
+    "page": 38,
+    "url": "https://prover.certora.com/output/39601/8591535c4a434f3e826af00b95ea1ca8?anonymousKey=a7b6743a3161a3289883f99014619a9d6e7196e1"
+  },
+  {
+    "page": 38,
+    "url": "https://prover.certora.com/output/39601/b44efe9ef3bd4ff5a1af710a7d3d7ee4?anonymousKey=7fd15cc355164c803123c27b41660fed34548647"
+  },
+  {
+    "page": 38,
+    "url": "https://prover.certora.com/output/39601/9fcde04ecd434963b9ce788f7ddea8c1?anonymousKey=a7efde58b28ef7c99264424b66984a8d39b78518"
+  },
+  {
+    "page": 38,
+    "url": "https://prover.certora.com/output/39601/a5bab5a7af8b4fd2819dedbc6e3221b9?anonymousKey=e4505515d8d69b3b1697c97fc3cc8f994802e46d"
+  }
+]
