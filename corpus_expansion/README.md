@@ -13,28 +13,29 @@ Research inventory captured on 2026-10-01 against PropertyGPT baseline
 - `evidence/*.commit.json`, `evidence/*.links.json`, `evidence/acquisition.json`:
   public commit metadata, PDF link annotations and acquisition records.
 - Python scripts: acquisition, evidence extraction and inventory verification.
+- `snapshots/`: all 1,524 materialized source, specification, configuration and
+  license files at the recorded upstream commits.
+- `archives/`: the seven original repository archives.
+- `evidence/*.pdf` and `evidence/*.txt`: collected reports and extracted text.
 
 Counts describe files and content hashes, not semantic properties or successful
 formal proofs. The 32 specification files contain 26 contents new to the baseline.
 Supplemental public snapshots are not asserted to be audited. The historical Aave
 V4 Hub snapshot is report-cited context, not the final verified revision.
 
-## Local-only upstream material and licensing
+## Upstream material and licensing
 
-`archives/`, `snapshots/`, PDF reports and their extracted full text are deliberately
-ignored by this directory's `.gitignore`. Existing local copies are preserved.
-The manifest's `materialized` status and summary verification describe the original
-local acquisition; these files are **not bundled in a fresh clone**.
+`archives/`, `snapshots/`, PDF reports and their extracted full text are bundled
+in the repository. A fresh clone contains the materialized research collection;
+downloads are needed only to reproduce acquisition or restore missing files.
 
 Snapshots contain mixed MIT, Apache, GPL, LGPL, AGPL, BUSL/LicenseRef-BUSL,
 unspecified and UNLICENSED labels. In particular, the Compound snapshot has three
 UNLICENSED test files and Euler has `test/unit/evault/POC.t.sol` marked UNLICENSED.
-Public availability alone does not establish redistribution permission for every
-file or for the Certora PDFs. This commit therefore publishes the research
-inventory and provenance without redistributing upstream source or report bodies.
 License labels are extraction results, not a license grant or a legal determination.
 Consult each pinned upstream license and file notice before reuse or redistribution.
-Archives are also excluded as redundant downloads (about 42 MB locally).
+Original license files and source notices are retained. Inclusion here does not
+relicense upstream material. Archives preserve the original downloads (about 42 MB).
 
 ## Reproduce and verify
 

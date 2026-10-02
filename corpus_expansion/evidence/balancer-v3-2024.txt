@@ -1,0 +1,618 @@
+
+PAGE 1
+D
+r
+a
+f
+t
+SecurityAssessment&FormalVeriﬁcationFinal Report
+Balancer V3September 2024
+Prepared for Balancer
+
+
+PAGE 2
+TableofcontentProjectSummary..............................................................................................................................................4ProjectScope.......................................................................................................................................................................................4ProjectOverview.................................................................................................................................................................................4ProtocolOverview......................................................................................................................................................................4FindingsSummary.............................................................................................................................................................................6SeverityMatrix.....................................................................................................................................................................................6DetailedFindings..............................................................................................................................................7CriticalSeverityIssues.................................................................................................................................................................10C-01Unusedtokenapprovalin_wrapWithBuffercandrainthevault..........................................................10C-02TheunderlyingtokenofERC4626canbechangedtostealassets..................................................11HighSeverityIssues........................................................................................................................................................................14H-01Anyusercanstealtheyieldofthewrappedtokensthatarekeptinthebuffer......................14MediumSeverityIssues...............................................................................................................................................................16M-01AmalicioususercancauseaDoSintheerc4626BufferWrapOrUnwrap()externalfunctionbyfront-runningthecaller....................................................................................................................................16M-02SwapfeesaredifferentdependingonifEXACT_INorEXACT_OUTarebeingused............17M-03Roundingerrorsinweightedpoolinvariantallowstotakeoutmoretokensthanadded19LowSeverityIssues.........................................................................................................................................................................21L-01initializeBuffercanonlybecalledwhenitmintsdoubletheminimalamount............................21L-02Transposeddigitsinaconstantvalue..................................................................................................................23L-03Itispossibletopaylessfeesbysplittingthedepositedamounts..................................................24L-04ReEntrancyPoolinitializationpossible................................................................................................................26InformationalSeverityIssues...................................................................................................................................................27I-01.FeesnotincludedinPoolBalanceChangedeventforaddandremoveliquidity.......................27I-02.RouterCommonunnecessarilyapprovesWETHtothevault................................................................28I-03.UnnecessaryselfapprovalinRouter.queryRemoveLiquidityHook....................................................28I-04.InwithdrawProtocolFees1badtokeninpoolcanblockfeecollectionofothertokensinthepool..................................................................................................................................................................................................29I-05.NosupportforERC4626bufferswithFeeorslippage.............................................................................29I-06.HooksConﬁgLib-AmountsignoredwhenenableHookAdjustedAmountsisfalse................30I-07.Nocustomerrorfortokens>18decimals.........................................................................................................30
+2
+
+
+PAGE 3
+I-08.InconsistentfunctionnamingPoolConﬁgLibrequireRemoveCustomLiquidityEnabledandrequireAddCustomLiquidityEnabled...................................................................................................................................31I-09.IncorrectnatSpecinVaultCommon.sol:_ﬁndTokenIndex.........................................................................31I-10.IncorrectcommentsinFixedPoint.solmulDivUp+mulUp.........................................................................31I-11IncorrectcommentinVaultExtensiongetPoolConﬁg....................................................................................32I-12LotsofduplicatecodebetweenVaultAdmininitializeBufferandaddLiquidityToBuffer.......33I-13SuggestionforVaultExplorer..........................................................................................................................................33FormalVeriﬁcation........................................................................................................................................34VeriﬁcationNotations...................................................................................................................................................................34GeneralAssumptionsandSimpliﬁcations.....................................................................................................................34FormalVeriﬁcationProperties................................................................................................................................................35VaultInvariants.................................................................................................................................................................................35P-01.VaultBufferInvariants.....................................................................................................................................................35P-02.VaultAccountingInvariants.......................................................................................................................................36P-03. Pool Supply..........................................................................................................................................37Vault Rules....................................................................................................................................................38P-04. Vault Underapproximation................................................................................................................... 38
+VaultBufferRules............................................................................................................................................................................39P-05.BufferCorrectness...........................................................................................................................................................39Vault Extension..............................................................................................................................................41
+P-06.PoolInitialization.................................................................................................................................................................41BalancerPoolTokensandERC20MultiToken...............................................................................................................42P-07.BalancerPoolToken/ERC20MultiTokenCorrectness...............................................................................42Disclaimer........................................................................................................................................................44AboutCertora.................................................................................................................................................44
+3
+
+
+PAGE 4
+ProjectSummary
+ProjectScope
+ProjectName Repository(link) LatestCommitHash Platform
+BalancerV3 balancer-v3-monorepo e4455af EVM
+ProjectOverview
+ThisdocumentdescribesthespecificationandverificationofBalancerV3usingtheCertoraProverandmanualcodereviewfindings.TheworkwasundertakenfromAugust6th2024toSeptember19th2024.
+Allcontractsinthebalancer-v3-monorepoareconsideredinscope.
+Duringthecourseoftheauditandverificationprocess,somesignificantchangesandupdatesweremadetotheprojectcode.ItwasagreedwithBalancertonotlimittheaudittoaspecificcommit,buttousethemostrecentversion.Duetothis,theauditwasperformedonseveralcodeversionsbetweencommit8df7df5fromAugust3, 2024upuntile4455afSeptember4, 2024.Someknownissuesthatwerepresentin earliercommitsarenotincludedinthisreportastheywerenotindependentlyfoundbyus.
+Theteamperformeda manualauditof alltheSoliditycontracts. In addition,theCertoraProverdemonstratedthattheimplementationoftheSoliditycontractsaboveiscorrectwithrespecttotheformalruleswrittenbytheCertorateam.Duringtheverificationprocessandthemanualaudit,theCertorateamdiscoveredbugsintheSoliditycontractscode,aslistedinthefollowing.
+ProtocolOverview
+Balancerv3isthesuccessorofv2andisadecentralizedautomatedmarketmaker(AMM)protocolbuiltonEthereumwithaclearfocusonfungibleandyield-bearingliquidity.Balancerv3’s architecturefocusesonsimplicity, flexibility, andextensibilityatitscore.Thev3vaultmoreformallydefinestherequirementsofacustompool,shiftingcoredesignpatternsoutofthepoolandintothevault.
+BalancerPoolsaresmartcontractsthatdefinehowtraderscanswapbetweentokensonBalancerProtocol,andthearchitectureofBalancerProtocolempowersanyonetocreatecustompooltypes.
+4
+
+
+PAGE 5
+WhatmakesBalancerPoolsuniquefromthoseofotherprotocolsistheirunparalleledflexibility. WiththeintroductionofHooksandDynamicSwapFees,thedegreeofcustomizationisboundless.
+Amajorinnovationinv3isnativeVaultsupportfortheERC4626standard.Thisallowsboostedpoolstohave100%capitalefficiency. AboostedpoolissimplyapoolofanytypecontainingallERC4626wrappedtokens.VaultbuffersandconveniencefunctionsintheRouterallowuserstointeractwithboostedpoolsasiftheywerestandardpoolscontainingonlyunderlyingtokens.
+5
+
+
+PAGE 6
+FindingsSummary
+Thetablebelowsummarizestheﬁndingsofthereview,includingtypeandseveritydetails.
+Severity Discovered Conﬁrmed Fixed
+Critical 2 2 2
+High 1 1 1
+Medium 3 3 3
+Low 4 4 3
+Informational 13
+Total 
+23 10 9
+SeverityMatrix
+Impact
+Critical Medium Medium/High High Critical
+High Low/Medium Medium Medium/High High
+Medium Low Low/Medium Medium Medium/High
+Low Informational Low Low/Medium Medium
+Rare Unlikely Likely VeryLikely
+Likelihood
+6
+
+
+PAGE 7
+DetailedFindings
+ID Title Severity Status
+C-01 Unusedtokenapprovalin_wrapWithBuffercandrainthevault
+Critical Fixed
+C-02 TheunderlyingtokenofERC4626canbechangedtostealassets
+Critical Fixed
+H-01 Anyusercanstealtheyieldofthewrappedtokensthatarekeptinthebuffer
+High Fixed
+M-01 AmalicioususercancauseaDoSintheerc4626BufferWrapOrUnwrap()externalfunctionbyfront-runningthecaller
+Medium Fixed
+M-02 SwapfeesaredifferentdependingonifEXACT_INorEXACT_OUTarebeingused
+Medium Fixed
+M-03 Roundingerrorsinweightedpoolinvariantallowstotakeoutmoretokensthanadded
+Medium Fixed
+L-01 initializeBuffercanonlybecalledwhenitmintsdoubletheminimalamount
+Low Fixed
+7
+
+
+PAGE 8
+L-02 Transposeddigitsinaconstantvalue
+Low Fixed
+L-03 Itispossibletopaylessfeesbysplittingthedepositedamounts
+Low KnownIssue
+L-04 ReEntrancyPoolinitializationpossible
+Low Fixed
+I-01 FeesnotincludedinPoolBalanceChangedeventforaddandremoveliquidity
+Informational
+I-02 RouterCommonunnecessarilyapprovesWETHtothevault
+Informational
+I-03 UnnecessaryselfapprovalinRouter.queryRemoveLiquidityHook
+Informational
+I-04 InwithdrawProtocolFees1badtokeninpoolcanblockfeecollectionofothertokensinthepool
+Informational
+I-05 NosupportforERC4626bufferswithFeeorslippage
+Informational
+I-06 HooksConﬁgLib-AmountsignoredwhenenableHookAdjustedAmountsisfalse
+Informational
+I-07 Nocustomerrorfortokens>18decimals
+Informational
+8
+
+
+PAGE 9
+I-08 InconsistentfunctionnamingPoolConﬁgLibrequireRemoveCustomLiquidityEnabledandrequireAddCustomLiquidityEnabled
+Informational
+I-09 IncorrectnatSpecinVaultCommon.sol:_ﬁndTokenIndex
+Informational
+I-10 IncorrectcommentsinFixedPoint.solMulDivUp+mulUp
+Informational
+I-11 IncorrectcommentinVaultExtensiongetPoolConﬁg
+Informational
+I-12 LotsofduplicatecodebetweenVaultAdmininitializeBufferandaddLiquidityToBuffer
+Informational
+I-13 SuggestionforVaultExplorer Informational
+9
+
+
+PAGE 10
+C r i t i c a l S e v e r i t y I s s u e s 
+ C-01Unusedtokenapprovalin_wrapWithBuffercandrainthevault
+Severity:Critical Impact:Critical Likelihood:VeryLikely
+Files:Vault.sol Status:Fixedin2b0fa9d ViolatedProperty:None
+Description: Whencalling_wrapWithBuffer()withSwapKind.EXACT_INitgivestokenapprovalofunderlyingTokentotheERC4626vaultbeforecallingdeposit.
+Afterthedeposititusestherealtransferredtokenstodotheaccounting.
+ExploitScenario: Doingawrapofhighamount,whilenotdoinganythingindeposit,willendwithalargetokenapprovaltotheerc4626vault,allowingittotakethosetokens.
+Recommendations: Revokethetokenapprovalafterthedepositcall
+Customer’sresponse:Fixed.
+FixReview:Tokenapprovalisrevokedafterthecalltothevault.Afterthisthisissueisnotexploitableanymore.
+10
+
+
+PAGE 11
+Unset 
+C-02TheunderlyingtokenofERC4626canbechangedtostealassets
+Severity:Critical Impact:Critical Likelihood:VeryLikely
+Files:VaultAdmin.sol Status:Fixedin4d45660 ViolatedProperty:underlyingAssetNotZeroAddressinP-01
+Description: When adding liquidity to an ERC4626buffer, a check is madetocheck that theunderlyingassetoftheERC4626vaulthasnotbeenchanged.This check can be bypassed to add liquidity and change the underlying token afterwards,allowinganattackertostealallofthetokensinthevault.
+functionaddLiquidityToBuffer(...)…{addressunderlyingToken=wrappedToken.asset();
+//Amountofsharestoissueisthetotalunderlyingtokenthatthe//userisdepositing.issuedShares= wrappedToken.convertToAssets(amountWrapped)+amountUnderlying;
+if(_bufferAssets[IERC20(address(wrappedToken))]==address(0)){
+ThecheckiftheassetissetornotisdonebycheckingthatthestoredunderlyingToken==0.ByhavingwrappedToken.asset()returnaddress(0)itispossibletoaddliquidityandlaterchangetheassettoanothervalue.
+ExploitScenario:CreateanERC4626contractthatcanreturndifferentvaluesforasset().
+1. calladdLiquiditywhentheERC4626contractreturnsaddress(0)forasset().
+11
+
+
+PAGE 12
+Unset 
+ Unset 
+ calladdLiquidityToBuffer(wrappedToken,amountUnderlying.=0,amountWrapped=1e30,sharesOwner)
+Thiswilladdshares,andset_bufferAssets[IERC20(address(wrappedToken))]=address(0);
+state:1e30bufferLpShares,bufferBalances1e30/0
+2. Changeasset()toadummytokentobeabletobalancethebuffer.YouneedaworkingERC20tokentobeabletounwrap.
+callvault.erc4626BufferWrapOrUnwrap(BufferWrapOrUnwrapParams({kind:SwapKind.EXACT_IN,direction:WrappingDirection.UNWRAP,wrappedToken:ERC4626contract,amountGivenRaw:1e6,limitRaw:0,userData:newbytes(0)}));
+This will unwrap the given wrapped token to our fake token. bufferWrappedSurplus willrebalancethepool.
+_bufferAssets[IERC20(address(wrappedToken))] ==address(0)sothecheckforbufferAssetisskipped.
+state:1e30bufferLpShares,bufferBalances5e29/5e29
+3.Changeasset()toreturnthetokenyouwanttotake(WETH,DAI,USDC,etc)
+12
+
+
+PAGE 13
+Unset calladdLiquidityToBuffer(wrappedToken,amountUnderlying.=0,amountWrapped=1e30,sharesOwner)
+Since _bufferAssets[IERC20(address(wrappedToken))] ==address(0)still holds, itwillprocessthisandsets_bufferAssets[IERC20(address(wrappedToken))]=targetUnderlyingToken;
+4. Nowwesimplycalculatehowmanysharesweneed toremoveallofthetargettokenandcallremoveLiquidityFromBuffer()
+Customer’sresponse:Fixed.
+FixReview: ArequiredInitializeBuffer stephas beenaddedfor ERC4626buffers. Thisensurestheunderlyingasset cannot bechanged. Thecodenowalsochecks that thereturnedassetisnotaddress(0).
+13
+
+
+PAGE 14
+Unset 
+ Unset 
+H i g h S e v e r i t y I s s u e s 
+ H-01Anyusercanstealtheyieldofthewrappedtokensthatarekeptinthebuffer
+Severity:High Impact:High Likelihood:Likely
+Files:VaultAdmin.sol Status: Fixedin3db8bd7 ViolatedProperty:removeLiquidityAfterAddLiquidityinP-04
+Description: It is possibletosteal theyieldof thewrappedtokensthatarekeptinthebuffer.Whenoneaddsliquiditytoabuffer, theamountof shareshereceivesisequaltotheamountofunderlying tokens depositedplus theworthof thewrappedtokens interms of theunderlyingtoken
+issuedShares= wrappedToken.convertToAssets(amountWrappedRaw)+amountUnderlyingRaw;.
+Whenoneremovesliquidity,hereceivestheproportionalpartofthebufferbalances:
+removedUnderlyingBalanceRaw= (bufferBalances.getBalanceRaw()*sharesToRemove)/totalShares;
+removedWrappedBalanceRaw=(bufferBalances.getBalanceDerived()*sharesToRemove)/totalShares;
+14
+
+
+PAGE 15
+Unset 
+Exploit Scenario: In this scenario, the underlying token is USDC and the wrapped token isaUSDC. Let us assumethat whenthebuffer is ﬁrstinitializedtheindexis1, meaning1 aUSDCisworth1 USDC. Theonewhoﬁrstdepositsintothebufferdeposits1000USDCand1000aUSDC.As a result, hereceives 2000shares (weignorethesmall amountthatgoestothe0address).Nowlet's say that sometimehas passedandnow1 aUSDCis worth2USDC. Anattacker candeposit 2000 USDC into the buffer, and receive 2000 shares. If he immediately callsremoveLiquidityFromBuffer(), he'll receivehalf of theUSDCinthebufferandhalfoftheaUSDCinthe buffer, meaning 1500 USDC and 500 aUSDC (which are worth 1000 USDC), netting 500USDC, whichis half of theyieldof thewrappedtokens. Bydepositinganevenlargeramountoftheunderlyingtoken,theattackercanstealanevenlargerportionoftheyield(upto100%).
+Recommendations: ChangetheaddLiquidityToBuffer() functionsuchthat thesharesthatarebeingissuedarecalculatedbasedonthevalueof thedepositinproportiontothevalueof thebufferatthetimeofthedeposit.
+Customer’sresponse:Fixed.
+FixReview: addLiquidityToBuffer()waschangedtocalculatetheamountof issuessharestobeproportionaltothecurrentvalueofthebuffer.
+uint256currentInvariant= bufferBalances.getBalanceRaw()+wrappedToken.convertToAssets(bufferBalances.getBalanceDerived());
+//Theinvariantdeltaistheamountwe'readding(atthecurrentrate)intermsofunderlying.uint256bufferInvariantDelta=wrappedToken.convertToAssets(amountWrappedRaw)+amountUnderlyingRaw;//Thenewshareamountistheinvariantrationormalizedbythetotalsupply.//Roundsdown,asthesharesare"outgoing,"inthesensethattheycanberedeemedfortokens.issuedShares= (_bufferTotalShares[wrappedToken]*bufferInvariantDelta)/currentInvariant;
+15
+
+
+PAGE 16
+M e d i u m S e v e r i t y I s s u e s 
+ M-01AmalicioususercancauseaDoSintheerc4626BufferWrapOrUnwrap()externalfunctionbyfront-runningthecaller
+Severity:Medium Impact:Medium Likelihood:Unlikely
+Files:Vault.sol Status: Fixedinc7b8bcf ViolatedProperty:None
+Description: The_updateReservesAfterWrapping()internal functionisbeingusedbothinthewrapandunwrapscenarios.ThisfunctionreturnstwounsignedintegerswhichrepresentthedifferencesinvaultUnderlying and vaultWrapped before and after the transaction. In the wrap scenario,vaultUnderlyingBefore shouldbegreater thanvaultUnderlyingAfter whilevaultWrappedAfter shouldbe greater than vaultWrappedBefore. In the unwrap scenario, it’s the opposite. The_updateReservesAfterWrapping()function“knows”whichscenarioitisbythesignof thedifferencebetweenvaultUnderlyingAfterandvaultUnderlyingBefore,andassumesthatthesignofthedifferencebetween vaultWrappedAfter and vaultWrappedBefore is the opposite. However, this is notnecessarilythecaseasonecantransfertokens(eithertheunderlyingtokensorthewrappedtokens)tothevaultbeforethetransactionwithoutupdatingthereservesinthestorage(_reservesOf[]).Ifthetransferredamount of tokens is larger thantheamountthatisbeingwrapped/unwrapped, acall toerc4626BufferWrapOrUnwrap() could revert as a result of an underﬂow in the_updateReservesAfterWrapping() function when calculating vaultWrappedDelta. The gifted tokenscould later bereclaimedby theattacker by calling settle() andsendTo(), effectively executing theDoSattackwithnosigniﬁcantlossoffunds(outsideofthegascost)
+Recommendations: Separatethe_updateReservesAfterWrapping()intotwofunctions,oneforthewrapscenarioandonefortheunwrapscenario.
+Customer’sresponse:Fixed.
+FixReview: The_updateReservesAfterWrapping() functionwas separatedinto_settleWrap()and_settleUnwap().
+16
+
+
+PAGE 17
+M-02SwapfeesaredifferentdependingonifEXACT_INorEXACT_OUTarebeingused
+Severity:Medium Impact:Medium Likelihood:Likely
+Files:Vault.sol Status:Fixedin814a9dd ViolatedProperty:None
+Description: Feesarealwayspaidinthetokenthatitsexactamountisnotspeciﬁed.This causes the vaultSwapParams.kind == SwapKind.EXACT_IN and vaultSwapParams.kind ==SwapKind.EXACT_OUTscenariostobeinherentlydifferent, asdifferentamountswillbepaidandreceivedineachtoken. Whileit couldhavebeenfair if neitherof theoptionswouldhavebeenstrictlybetterthantheotherinanon-negligibleway,thisisnotthecase.
+ExploitScenario: Letusconsideraweightedpoolwith3tokensandweights[0.9,0.09,0.01].Theinitial balanceis[100000, 10000, 1000] andtheswapfeeis2%of theswap. Assumingtheswapperwantstoswapabout50tokensof token0forabout43.1 tokensof token2, itwouldbebetterforhimtocallswapwithvaultSwapParams.kind==SwapKind.EXACT_OUT:
+CallingswapwithvaultSwapParams.kind==SwapKind.EXACT_IN:
+Poolbalanceafterswap:[100050,10000,956.008]
+Amountin:50
+Amountout:43.1119
+CallingswapwithvaultSwapParams.kind==SwapKind.EXACT_OUT:
+Poolbalanceafterswap:[100048.97746,10000,956.888]
+Amountin:49.977
+Amountout:43.112
+17
+
+
+PAGE 18
+As calling swap with EXACT_OUT would cause the swapper to pay less to receive the sameamountoftokensout.
+Recommendations: Takefees inthesametokenforbothscenarios(eitheralwaystakefeesintoken_inoralwaystakefeesintoken_out),sothatthetwooptionswouldbeequivalent(withthepossibleexceptionofsmallroundingerrors).
+Customer’sresponse:Fixed.
+FixReview: Feesarealwaystakenintoken_in.
+18
+
+
+PAGE 19
+Unset 
+M-03Roundingerrorsinweightedpoolinvariantallowstotakeoutmoretokensthanadded
+Severity:Medium Impact:Medium Likelihood:Unlikely
+Files:WeightedMath.sol
+Status:Fixedin3cb2177 ViolatedProperty:None
+Description: Whenaddingliquidityinanunbalancedwaythepoolcalculatestheinvariantfromthe token balances. Depending on these balances the invariant can have different roundingerrors from the pow function per invariant. Even though the invariantRatio which is used tocalculatetheBPTOutdoesaroundDown,thedifferencecanbebigenoughtohaveaneffect.This allows a user to ﬁrst add tokens in an unbalanced way and then remove liquidity in abalanced way and receive more tokens than he has added. The amount of tokens that anattackercanstealusingthismethodappearstobeinsigniﬁcant.
+ExploitScenario:Example:a20/80pool
+currentBalances100000000000000000000000000400000000000000000000000000currentInvariant303143313302073553166025329
+AddingtokensviaAddLiquidityunbalanced:newBalances200000000000000000000000000800000000000000000000000000newInvariant 606286626604147106718989070invariantRatio2000000000000000001
+Thismeans,theuseradds2.0xtokensandreceives2.000000000000000001xtheBPTamount.DoinganaddliquidityfollowedbyremoveLiquidityBALANCEDresultsinanetproﬁtfortheuser.
+19
+
+
+PAGE 20
+Unset 
+inthisexample:
+Aftersettlingalldebts:
+RECEIVE:255284147token0.(LiveScaled18)RECEIVE:63821036token1.(LiveScaled18)
+Customer’sresponse:Fixed.
+FixReview: Anextraparameter hasbeenaddedtothefunctionthatcalculatestheinvarianttospecifythedesiredroundingdirection.Thismakessureallroundingisdoneinfavorofthepool.
+20
+
+
+PAGE 21
+Unset 
+ Unset 
+L o w S e v e r i t y I s s u e s 
+ L-01initializeBuffercanonlybecalledwhenitmintsdoubletheminimalamount
+Severity:Low Impact:Medium Likelihood:Unlikely
+Files:VaultAdmin.sol Status: Fixedin10e7421 ViolatedProperty: None
+Description: In VaultAdmin.sol - initializeBuffer() the _MINIMUM_TOTAL_SUPPLY check isincorrect, making it only possible to initialize a buffer with 2 * _MINIMUM_TOTAL_SUPPLYtotalSupply.
+VaultAdmin.sol-initializeBuffer():
+issuedShares-=_MINIMUM_TOTAL_SUPPLY;_mintBufferShares(wrappedToken,sharesOwner,issuedShares);_mintMinimumBufferSupplyReserve(wrappedToken);
+SotheissuedSharesparametersentto _mintBufferShares()alreadyhasthe_MINIMUM_TOTAL_SUPPLYsubtracted.In_mintBufferShares:
+function_mintBufferShares(IERC4626wrappedToken,addressto,uint256amount)internal{....uint256newTotalSupply=_bufferTotalShares[wrappedToken]+ amount;_ensureMinimumTotalSupply(newTotalSupply);
+21
+
+
+PAGE 22
+Here the _ensureMinimumTotalSupply check is actually checking the amount minus_MINIMUM_TOTAL_SUPPLY.
+Soinordertopassthetest,theoriginalIssuedSharesneedstobe2*_MINIMUM_TOTAL_SUPPLY
+Recommendations: Changetheorderoffunctioncalls._mintMinimumBufferSupplyReservebefore_mintBufferShares
+Customer’sresponse:Fixed.
+FixReview: Orderhaschangedandseemscorrectnow.
+22
+
+
+PAGE 23
+Unset 
+L-02Transposeddigitsinaconstantvalue
+Severity:Low Impact:Medium Likelihood:Unlikely
+Files:VaultStorage.sol Status: Fixedind5686f1 ViolatedProperty: None
+Description: Theconstant_MAX_PAUSE_WINDOW_DURATIONwassettoavalueof356days*4whileitwasmeanttobesetto365days*4(4years).
+Recommendations: Setthevalueof_MAX_PAUSE_WINDOW_DURATIONto365days*4.
+Customer’sresponse:Fixed.
+FixReview: _MAX_PAUSE_WINDOW_DURATIONwassettoitsintendedvalue.
+uint256internalconstant_MAX_PAUSE_WINDOW_DURATION=365days*4;
+23
+
+
+PAGE 24
+L-03Itispossibletopaylessfeesbysplittingthedepositedamounts
+Severity:Low Impact:Medium Likelihood:Unlikely
+Files:BasePoolMath.sol Status: Notﬁxed ViolatedProperty: None
+Description: Whenaddingliquidity, it might bebeneﬁcial for a user whowishes todeposit acertainamount of tokens intoa pool tosplitthatamountintoseveral deposits. Bysplittingthedepositedamount intotwoormoredeposits, theusercouldpaylessinfeesandgetmoreBPTout.
+Exploit Scenario: We’ll take a look at a scenario in which a user calls thecomputeAddLiquidityUnbalanced()functionwhendepositingintoaweightedpool.Let’ssaythatthepool has3tokenswithweights[0.6, 0.3, 0.1], aninitialbalanceof[10000,10000,10000],anda2%swapfee.
+Ifauserwilldeposit100tokensoftoken0inasingletransaction,thepoolbalancewouldbe:
+[10099.197611133253,10000,10000]
+Andthetokensthatwerenotdepositedintothepoolweretakenasafee.
+However, if the same user would choose to split this deposit intotwoequal amounts (so50tokenseachtime),thepoolbalancewouldbe:
+[10099.19880573918,10000,10000]
+Whichis greater thanit was inthenormal scenario, meaningthatbyapplyingthismethodtheuserpaidlessfeesandgotmoreBPTout.
+24
+
+
+PAGE 25
+Recommendations: Rethinkthemathbehindsomeofthepoolsandoperations.Fixingthisissuemightrequiremakingsomeground-breakingchangestothecodeanditsdesign, soitmightbebesttokeepthecurrentbehavior.
+Customer’sresponse:Knownissue.
+FixReview: Currentbehaviorwaskept.
+25
+
+
+PAGE 26
+L-04ReEntrancyPoolinitializationpossible
+Severity:Low Impact:Low Likelihood:Unlikely
+Files:VaultExtension.sol Status:Fixedinecd42a5 ViolatedProperty: None
+Description: Itispossibletore-enterpoolinitializationviathecallBeforeInitializeHook.
+Result: _initializeis called2times andPoolInitializedandPoolBalanceChangedeventareﬁred2times for the same pool. Thesecondtime, _inititializewill overwritethebalances andinbothcalls,the_MINIMUM_TOTAL_SUPPLYisburned.
+Thereisnoproﬁtableexploit.
+Sincebalances cannot benegative, theonlyresult that canbeachievedismakingowntokensdisappearorbeingburned. Atmaximumimpact,itcanimpactoff-chainaccountinggiventhatinthe reentered call a PoolBalanceChangedevent is ﬁredtoinformthat tokenbalancehas beenaddedtothepool,whiletheaddedbalancesarelateroverwritten.
+Recommendations: For safety/consistency I would recommend to move the isPoolInitializedcheckinﬁnalize()toafterthehookoraddnonReentrantmodiﬁertotheinitializefunction.
+Customer’sresponse:Fixed.
+FixReview: AnonReentrantmodiﬁerwasaddedtothefunction.
+26
+
+
+PAGE 27
+Unset 
+I n f o r m a t i o n a l S e v e r i t y I s s u e s 
+ I - 0 1 . F e e s n o t i n c l u d e d i n P o o l B a l a n c e C h a n g e d e v e n t f o r a d d a n d r e m o v e l i q u i d i t y 
+ Description:WhenaddingorremovingliquiditythevaultemitsaPoolBalanceChangedeventwiththepooltokendeltas.Forunbalancedoperations,theaddandremoveliquidityfunctionscanchargefees.ThesefeesarenottakenintoaccountforthePoolBalanceChangedevent,resultinginadifferencebetweentheactualpooltokendeltaandthevaluesintheevent.
+Examplecodesnippetfrom_addLiquidity:
+….for(uint256i = 0;i <locals.numTokens;++i){…amountsInRaw[i]=amountInRaw;…poolData.updateRawAndLiveBalance(i,poolData.balancesRaw[i]+ amountInRaw-locals.totalFeesRaw,Rounding.ROUND_UP);}
+emitPoolBalanceChanged(params.pool,params.to,amountsInRaw.unsafeCastToInt256(true));
+The locals.totalFeesRawis removed fromthe pool balance, but not taken into account intheeventamounts.
+SamegoesfortheremoveLiquidityfunction.
+Recommendation: Havetheamountsintheeventreﬂecttheactualchangedpoolamounts.
+27
+
+
+PAGE 28
+Unset 
+ Unset 
+I - 0 2 . R o u t e r C o m m o n u n n e c e s s a r i l y a p p r o v e s W E T H t o t h e v a u l t 
+ Description:IntheconstructorofRouterCommon.solthevaultisgivenunlimitedapprovalforWETH.
+constructor(IVaultvault,IWETHweth,IPermit2permit2)VaultGuard(vault){_weth= weth;_permit2=permit2;weth.approve(address(vault),type(uint256).max);}
+Thevaultdoesnothandleanytokentransfersin,sothisapprovalisnotneeded.
+Recommendation: Removetheunnecessaryapproval.
+I - 0 3 . U n n e c e s s a r y s e l f a p p r o v a l i n R o u t e r . q u e r y R e m o v e L i q u i d i t y H o o k 
+ Description:InqueryRemoveLiquidityHookinRouter.soltheroutergivesanunneededselfapprovalfortheBPTtoken.
+//Ifrouteristhesender,ithastoapproveitself.IERC20(params.pool).approve(address(this),type(uint256).max);
+IntheremoveLiquiditycallthespenderandowneroftheBPTtoburnarebothsettotherouter.TheERC20MultiToken._allowancefunctionreturnsunlimitedallowancewhenowner==spendersoitisnotneededtoselfapprove.
+Recommendation: Removetheunneededapproval
+28
+
+
+PAGE 29
+Unset 
+I - 0 4 . I n w i t h d r a w P r o t o c o l F e e s 1 b a d t o k e n i n p o o l c a n b l o c k f e e c o l l e c t i o n o f o t h e r t o k e n s i n t h e p o o l Description: collectAggregateFeesmakesthevaultcallreceiveAggregateFeesinProtocolFeeController.ThisfunctionloopsoverthetokensinthepoolandtransfersthefeesfromthevaulttotheProtocolFeeController.
+function_receiveAggregateFees(addresspool,ProtocolFeeTypefeeType,uint256[]memoryfeeAmounts)private{(IERC20[]memorypoolTokens,uint256numTokens)=_getPoolTokensAndCount(pool);for(uint256i = 0;i <numTokens;++i){if(feeAmounts[i]>0){IERC20token= poolTokens[i];
+token.safeTransferFrom(address(getVault()),address(this),feeAmounts[i]);...}}}
+Thenthereisonebadtokeninthepool,thispreventstheProtocolFeeControllerfromcollectingfeesfromtheothertokensinthepool.
+I-05.NosupportforERC4626bufferswithFeeorslippageDescription: ERC4626 vaults can apply slippage or fees for wrapping and unwrappingunderlyingtokens.ThepreviewMint/previewDepositfunctionstakethesefeesintoaccountinthecalculation, whiletheconvertToAssets/convertToSharesdonot.Balancer uses theconvertTofunctions. As aresultwrappingtokensforanERC4626bufferwithfees with SwapKind.EXACT_OUT will revert as the approved amount is based on theconvertToSharesresults
+Recommendations: UsepreviewMint/previewDepositforall ERC4626callsorclearlydocumentthatERC4626vaultwithfees/slippagearenotsupported.
+29
+
+
+PAGE 30
+Unset 
+I - 0 6 . H o o k s C o n ﬁ g L i b - A m o u n t s i g n o r e d w h e n e n a b l e H o o k A d j u s t e d A m o u n t s i s f a l s e Description:WhentheenableHookAdjustedAmountsconﬁgisfalse,allcall….Hookfunctionsreturntheoriginalamountwithoutcheckingifthehookhasactuallydoneanythingwiththeamounts
+//Ifhookadjustedamountsisnotenabled,ignoreamountsreturnedbythehookif(config.enableHookAdjustedAmounts()==false){returnamountsOutRaw;}
+Recommendation:Ascommentedinthecode,anyreceivedfundswillbeabsorbedbythevault.WhenaHooktakestokenswhileenableHookAdjustedAmounts==falsethisisignoredanditisassumedthatthedifferencewillcauseanerrorwhenlockingthevault.Itwouldbebettertorevertwitha‘HookNotAllowedToAdjustBalance’ifthetokendeltashavebeenchangedafterthehookcallwhenenableHookAdjustedAmountsisfalse.
+I - 0 7 . N o c u s t o m e r r o r f o r t o k e n s > 1 8 d e c i m a l s Description:Thevaultdoesnotallowtokenswithmorethan18decimalsinanypool.Whenregisteringapoolwithatokenwithmorethan18decimalsitwillresultinarevertcausedbyarithmeticunderﬂow.
+Recommendation:ItwouldbepreferabletocheckthisandreturnanInvalidTokenerror.
+30
+
+
+PAGE 31
+Unset 
+ Unset 
+I - 0 8 . I n c o n s i s t e n t f u n c t i o n n a m i n g P o o l C o n ﬁ g L i b r e q u i r e R e m o v e C u s t o m L i q u i d i t y E n a b l e d a n d r e q u i r e A d d C u s t o m L i q u i d i t y E n a b l e d Description:Inalllocationsthenaming“LiquidityCustom”isusedexceptforrequireRemoveCustomLiquidityEnabledandrequireAddCustomLiquidityEnabledwheretheorderofwordsis“CustomLiquidity”
+Recommendation:Tobeconsistentwiththerestofthecode,thefunctionshouldberenamedtorequireRemoveLiquidityCustomEnabledandrequireAddLiquidityCustomEnabled
+I - 0 9 . I n c o r r e c t n a t S p e c i n V a u l t C o m m o n . s o l : _ ﬁ n d T o k e n I n d e x Description:For_ﬁndTokenIndexthenatSpecreads///@devFindtheindexofa tokenina tokenarray.Returns-1ifnotfound.
+Whilecoderevertswhennotfound
+Recommendation:Changecommenttoindicatethefunctionrevertswhennotfound
+I - 1 0 . I n c o r r e c t c o m m e n t s i n F i x e d P o i n t . s o l m u l D i v U p + m u l U p Description:SomeofthecommentsinFixedPoint.solareincorrect
+functionmulDivUp://ThischeckisrequiredbecauseYul's`div`doesn'trevertonb==0if(c==0) {revertZeroDivision();}
+functionmulUp(uint256a,uint256b)internalpurereturns(uint256result){//MultiplicationoverflowprotectionisprovidedbySolidity0.8.x
+31
+
+
+PAGE 32
+Unset 
+ uint256product=a* b;
+//ThetraditionaldivUpformulais://divUp(x,y):=(x+ y- 1)/ y//Toavoidintermediateoverflowintheaddition,wedistributethedivisionandget://divUp(x,y):=(x- 1)/ y+ 1//Notethatthisrequiresx!=0,ifx==0thentheresultiszero
+//Equivalentto://result= product==0? 0:((product- 1)/ FixedPoint.ONE)+1;assembly{result:=mul(iszero(iszero(product)),add(div(sub(product,1),ONE),1))}}
+Recommendation:mulDivUp:b==0shouldbec==0mulUp:removethedivUppartinthecomments
+I - 1 1 I n c o r r e c t c o m m e n t i n V a u l t E x t e n s i o n g e t P o o l C o n ﬁ g Description:ThecommentaboutsupportUnbalancedLiquidityinVaultExtensiongetPoolConﬁgseemsincorrectorcanberephrased.
+//NOTE:supportUnbalancedLiquidityisinvertedbecausefalsemeansitissupported.
+disableUnbalancedLiquidity:!config.supportsUnbalancedLiquidity(),
+ThecommentseemstosuggestthatsupportUnbalancedLiquidity==falsemeansUnbalancedLiquidityissupported.
+Recommendation:Rephraseto“supportUnbalancedLiquidityfalsemeansitisdisabled".
+32
+
+
+PAGE 33
+I - 1 2 L o t s o f d u p l i c a t e c o d e b e t w e e n V a u l t A d m i n i n i t i a l i z e B u f f e r a n d a d d L i q u i d i t y T o B u f f e r Description:ThereisahugeoverlapbetweenthecodeininitializeBufferandaddLiquidityToBuffer.
+Recommendation:ItseemsabetteroptiontohaveinitializeBufferonlydotheinitialization(save_bufferAssets,_mintMinimumBufferSupplyReserve)andthencalladdLiquidityToBuffer
+I - 1 3 S u g g e s t i o n f o r V a u l t E x p l o r e r Description:TheVaultExplorercontractseemstoonlyexisttogiveusersaneasywaytoqueryviewfunctionsofthevaultfromblockchainexplorers.UserswouldstillneedtoknowtheexistenceoftheVaultExplorercontractandknowtheaddresswhereitisdeployed.AnalternativeapproachcouldbetousetheEIP1967functionalityofexplorerstoachievethesame.
+Recommendation:InsteadofaseparateVaultExplorercontractthatcallsthevault,onecoulddeployaVaultInterfacescontractwithonlytheIVaultAdminandIVaultExtensioninterfaceswithoutanyimplementation.WhentheVaultconstructorsavestheaddressofthiscontractintheEIP1967_IMPLEMENTATION_SLOTmostcommonblockchainexplorerscandetectthisviathe“Isthisaproxy”option.Afterthat,allfunctionsofVaultAdminandVaultExtensioncanbecalledviatheRead/WriteasproxyfromtheVaultcontractpageintheblockchainexplorer.
+33
+
+
+PAGE 34
+FormalVeriﬁcation
+VeriﬁcationNotations
+FormallyVeriﬁed
+Theruleisveriﬁedforeverystateofthecontract(s),undertheassumptionsofthescope/requirementsintherule.
+FormallyVeriﬁedAfterFix
+Therulewasviolatedduetoanissueinthecodeandwassuccessfullyveriﬁedafterﬁxingtheissue
+Violated
+Acounter-exampleexiststhatviolatesoneoftheassertionsoftherule.
+GeneralAssumptionsandSimpliﬁcations
+1) Hooks:HooksareanewfeaturebyBalancerV3,howevernoconcretehookcontractshavebeenprovidedsofar.Duetothefarreachingpossibilitiesofchangesonvaultbalances,weassumethathooksdonotinterferewiththevault’sstoragebutonlyreturnnondeterministicvalues,thatisweunderapproximatethehooks’behaviors.Withoutconcreteimplementations,itisotherwisenotpossibletogiveformalguaranteesasanysoundoverapproximationwouldresultinrandomcontractstoragechangeswheneverahookiscalled.We,thus,stronglyrecommendanotherauditthatsolelyfocusesonthecorrectnessofhookcontractsoncetheyhavebeensufﬁcientlyimplemented.2) Pools:InordertosimplifytheveriﬁcationoftheVault’sfunctionality,wemakeanunderapproximationusingPoolMock.solwheneverapoolisusedinthevault.3) CodeMunges:Wesimpliﬁedpartsofthecode,speciﬁcallyweintroducedloopsthatinitializenewlygeneratedcomplexdatastructuressuchasarraysofstructsexplicitlyintheunderlyingcodetocircumventstaticanalysisissues.ThesechangesaffectPoolDataLib.solaswellasBasePoolMath.sol.4) Furthersimpliﬁcationsandunderapproximationsarelistedbelowaccordingtotherulesadheringtothem.
+34
+
+
+PAGE 35
+F o r m a l V e r i ﬁ c a t i o n P r o p e r t i e s 
+ V a u l t I n v a r i a n t s 
+ Module Gener al Assumptions TheVaultismadeupofthreecontracts:themaincontractVault.sol,aswellasVaultExtension.solandVaultAdmin.sol.Toproveinvariantsonallexternalfunctionsofthesethreecontracts,weextendedthemainvaultcontractwithboththeVaultExtension.sol’sandVaultAdmin.sol’sexternalfunctionsinordertoformallyprovethecorrectnessofalladequatemethods.Thefollowingpropertiesarethusprovencorrecton:- Vault.sol- VaultAdmin.sol- VaultExtension.sol
+Module Pr oper ties 
+ 35
+P-01.VaultBufferInvariants
+Status:Veriﬁed
+RuleName Status Description Linktorulereport
+underlyingAssetNotZeroAddress
+Veriﬁedafterﬁx
+ThisruleveriﬁesthatwhenbufferTotalShares[wrappedToken]>0,thewrappedTokenwasinitializedinthebuffer,i.e.underlyingassetaddresshasbeenstoredinbufferAssets[wrappedToken].
+Report
+underlyingAssetNotInitialized
+Veriﬁed
+ThisruleveriﬁesthatwhenbufferTotalShares[wrappedToken]<MINIMUM_TOTAL_SUPPLY,thewrappedTokenwasnotinitializedinthebuffer,i.e.bufferAssets[wrappedToken]isaddress(0).
+Report
+
+
+PAGE 36
+36
+sumOfBufferLpSharesIsBufferTotalShares
+Veriﬁed
+Thisruleveriﬁesthatthesum ofbufferLPShares[wrappedToken][*]+MINIMUM_TOTAL_SUPPLYequalsbufferTotalShares[wrappedToken].
+Report
+bufferAssetsNotRegisteredWhenTotalSupplyIsZero
+Veriﬁed
+ThisruleveriﬁesthatbufferAssetsshouldnotbeinitializedforawrappedTokenwhosetotalShareshavenotbeenset.
+Report
+bufferTotalSharesHasMinSharesOrUnderlyingIsZeroAddress
+Veriﬁed
+ThisruleveriﬁesthataninitializedwrappedTokenhasatleastminimumtotalsupplyorhasnotbeeninitialized(totalShares==0).
+Report
+noTwoBalancesExceedTotalBufferSupply
+Veriﬁed
+Thisruleveriﬁesthatnosumofbalancesisbiggerthanthesumoflpshares.
+Report
+P-02.VaultAccountingInvariants
+Status:Veriﬁed
+Assumptions:Nodonationstovault’sbalances.
+RuleName Status Description Linktorulereport
+reservesOfStoresCorrectBalances
+Veriﬁed
+Theinternalvaultreservespertokencovertheactualbalancesofthevaultintherespectivetoken.Thisruleassumesnoexternaldonationstothevault’sbalanceinthetoken.
+Report
+lockedVaultHasNoNonZeroDelt
+Veriﬁed
+Thisruleveriﬁesthatwhenthevaultislocked,therearenooutstandingnon-zerodeltas.
+Report
+
+
+PAGE 37
+37
+as
+P-03.PoolSupply
+Status:Veriﬁed
+initializedPoolHasMinTotalSupply
+Veriﬁed Thisruleveriﬁesthatwhenapoolhasbeeninitialized,itstotalsupplyis>=MINIMUM_TOTAL_SUPPLY.
+Report
+uninitializedPoolHasNoTotalSupply
+Veriﬁed
+This rule veriﬁes that an uninitialized pool has nototalsupply.
+Report
+
+
+PAGE 38
+V a u l t R u l e s 
+ Module Gener al Assumptions ThefollowingrulesareveriﬁedonanunderapproximationoftheVault.solcontract.Duetothecomplexityoftheunderlyingcode,weverifythemostimportantpropertiesonasevereunderapproximationtoensurethatnofundscanbelostunderthemostcriticalconditions.Weassumethefollowingstatespace:- WeuseamodiﬁedversionofthePoolMockaspoolcontainingtwoERC20tokens.- computeInvariant()returnsthesumofpoolTokenbalances.- onSwap()isbasedonasimpleratiobetweenbothtokens,e.g.2*token0 == token1- ThepoolcontainsexactlytwoERC20tokens.- Weassume0swapFees.- WeassumeatokenRateof1indecimals.- WeassumeadecimalScalingFactorof1foreachtoken,i.e.nodecimaldifferencebetweenbothtoolTokens.
+Module Pr oper ties 
+ 38
+P-04.VaultUnderapproximation
+Status:
+swappingBackAndForth
+Veriﬁed Thisruleveriﬁesthatswappingsomeamountfromonetokentoanotherandbackagaindoesnotresultinagainoffunds.
+Veriﬁedonunreleasedproverversions
+removeLiquidityAfterAddLiquidity
+Veriﬁed
+Thisruleveriﬁesthataddingliquidityproportionallyand removing the same amount withremoveLiquidity proportionally cannot result inanincreaseinbothtokens.
+
+
+PAGE 39
+V a u l t B u f f e r R u l e s 
+ Module Gener al Assumptions ThefollowingrulesaboutbuffercorrectnessareveriﬁedontheVaultAdmin.solcontract
+Module Pr oper ties 
+ 39
+P-05.BufferCorrectness
+Status:Veriﬁed
+RuleName Status Description Linktorulereport
+addLiquidityToBufferIntegrity
+Veriﬁed
+This ruleveriﬁes that addingliquidity tothebuffercorrectly updates bufferBalances, bufferLPShares,bufferTotalShares,andtokenDeltas.
+SummarizedReport
+removeLiquidityFromBufferIntegrity
+Veriﬁed
+This ruleveriﬁes removingliquidity fromthebuffercorrectly updates bufferBalances, bufferLPShares,bufferTotalShares,andtokenDeltas.
+removeLiquidityAfterAddLiquidity
+Manuallyreviewedafterﬁx
+This ruleveriﬁes that removingliquidity, thatistheamount of shares that wasjustadded, afteraddingliquidity does not result inmoretokens thanwereoriginally supplied. This is violated due toshares/removedliquiditycalculationonlydependingonthenumberofsharesbutnotonthevalueoftotalassetsasexplainedinIssueH-01. Thisruledoesnotapply anymore after the ﬁx for this violationprovidedinH-01.
+splitAddLiquidity
+Veriﬁed
+This ruleveriﬁes thatsplittingamountsofwrappedand underlying tokens into two portions whensupplyingliquidityisnotadvantageousfortheuser.
+
+
+PAGE 40
+40
+initializeBufferOnlyOnce
+Veriﬁed
+This ruleveriﬁesthatabuffercanonlybeinitializedonce, such that further calls to initialize alwaysrevert.
+
+
+PAGE 41
+V a u l t E x t e n s i o n 
+ Module Gener al Assumptions ThefollowingrulesaboutthecorrectnessoftheBalancerPoolTokenandtheunderlyingERC20MultiTokenimplementationareveriﬁedontheBalancerPoolToken.solcontract.
+Module Pr oper ties 
+ 41
+P-06.PoolInitialization
+Status:Veriﬁed
+Note:ThisruleissolelyveriﬁedonVaultExtension.sol
+RuleName Status Description Linktorulereport
+initializePoolOnlyOnce
+Veriﬁed Repeatedcallstoinitialize willalwaysrevert. Report
+
+
+PAGE 42
+B a l a n c e r P o o l T o k e n s a n d E R C 2 0 M u l t i T o k e n 
+ Module Gener al Assumptions ThefollowingrulesaboutthecorrectnessoftheBalancerPoolTokenandtheunderlyingERC20MultiTokenimplementationareveriﬁedontheBalancerPoolToken.solcontract.
+Module Pr oper ties 
+ 42
+P-07.BalancerPoolToken/ERC20MultiTokenCorrectness
+Status:Veriﬁed
+Assumptions:
+RuleName Status Description Linktorulereport
+approveIntegrity
+Veriﬁed Callingapprovechangestheallowancecorrectly. SummarizedReport
+transferIntegrity
+Veriﬁed Calling transfer increases and decreases theaccordingbalancescorrectly.
+transferIsOneWayAdditive
+Veriﬁed Splittinganamountintomultipletransfersworksthesameastransferringonebigamount.
+transferDoesNotAffectThirdParty
+Veriﬁed Calls to transfer do not change any third partybalances.
+transferFromIntegrity
+Veriﬁed Calling transferFrom increases and decreases theaccordingbalancescorrectly.
+transferIsOneWayAdditive
+Veriﬁed Splittinganamountintomultipletransfersworksthesameastransferringonebigamount.
+transferDoesNotAffectThirdParty
+Veriﬁed Calls totransferFromdonotchangeanythirdpartybalances.
+
+
+PAGE 43
+43
+permitIntegrity
+Veriﬁed Calls to permit correctly change allowances,increment the holder’s nonce and respect theexpirationdeadline.
+permitDoesNotAffectThirdParty
+Veriﬁed Permitdoesnotaffectthirdpartyallowances.
+permitRevertWhenDeadlineExpires
+Veriﬁed Callstopermitrevertswhenthecallliesoutsidethecurrentdeadline.
+totalSupplyIsSumOfBalances
+Veriﬁed totalSupplyisthesumofallbalances.
+totalSupplyNeverOverflow
+Veriﬁed totalSupplycanneveroverﬂow.
+noMethodChangesMoreThanTwoBalances
+Veriﬁed Nomethodcanchangemorethantwobalancesatonce.
+noSumOfBalancesLargerThanTotalSupply
+Veriﬁed NosumofbalancesislargerthanthetotalSupply.
+onlyAllowedMethodsMayChangeAllowance
+Veriﬁed Only calls toapprove, permit andtransferFromcandecrease allowance, only approve and permit canincreaseallowance.
+onlyAllowedMethodsMayChangeBalance
+Veriﬁed Only calls totransfer andtransferFromcanchangeuserbalance.
+
+
+PAGE 44
+Disclaimer
+Eventhoughwehopethis informationishelpful, weprovidenowarrantyof anykind, explicitorimplied. Thecontents of this report shouldnotbeconstruedasacompleteguaranteethatthecontractissecureinalldimensions.InnoeventshallCertoraoranyofitsemployeesbeliableforanyclaim, damages, orotherliability, whetherinanactionof contract, tort, orotherwise, arisingfrom,outof,orinconnectionwiththeresultsreportedhere.
+AboutCertora
+CertoraisaWeb3securitycompanythatprovidesindustry-leadingformalveriﬁcationtoolsandsmart contract audits. Certora’s ﬂagship security product, Certora Prover, is a unique SaaSproduct that automatically locates even the most rare & hard-to-ﬁnd bugs on your smartcontracts or mathematicallyproves their absence. TheCertoraProverplugsintoyourstandarddeployment pipeline. Itishelpful forsmartcontractdevelopersandsecurityresearchersduringauditingandbugbounties.
+Certora also provides services such as auditing, formal veriﬁcation projects, and incidentresponse.
+44

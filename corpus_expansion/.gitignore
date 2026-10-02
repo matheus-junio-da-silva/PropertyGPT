@@ -1,7 +1,3 @@
-# Reproducible upstream downloads; retained locally, not redistributed.
-/archives/
-/snapshots/
-/evidence/*.pdf
-/evidence/*.txt
+# Generated Python caches only; acquisition artifacts are versioned.
 __pycache__/
 *.py[cod]
